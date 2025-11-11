@@ -132,3 +132,21 @@ def test_apply_replace_columns(df):
     assert_array_equal(res["a"], ["a", "a", "a", "b", "b"])
     assert_array_equal(res["x"], [1, 1, 2, 2, 3])
     assert_array_equal(res["z"], [.2, .5, 1.3, .4, .9])
+
+
+def test_apply_respects_categorical_order(df):
+
+    df = df.copy()
+    df["a"] = pd.Categorical(df["a"], categories=["b", "a", "c"], ordered=True)
+
+    def marker(d):
+        return d.assign(marker=np.arange(len(d)))
+
+    res = GroupBy(["a"]).apply(df, marker)
+
+    expected_groups = ["b"] * (df["a"] == "b").sum() + ["a"] * (df["a"] == "a").sum()
+    assert res["a"].tolist() == expected_groups
+    assert_array_equal(res["marker"], np.concatenate([
+        np.arange((df["a"] == "b").sum()),
+        np.arange((df["a"] == "a").sum()),
+    ]))

@@ -41,6 +41,17 @@ class TestAgg(AggregationFixtures):
         expected = df.groupby("x", as_index=False)["y"].mean()
         assert_frame_equal(res, expected)
 
+    def test_default_y_orient(self, df):
+
+        ori = "y"
+        df = df[["x", "y"]]
+        gb = self.get_groupby(df, ori)
+        res = Agg()(df, gb, ori, {})
+
+        expected = df.groupby("y", as_index=False)["x"].mean()
+        expected = expected.reindex(columns=["x", "y"])
+        assert_frame_equal(res, expected)
+
     def test_default_multi(self, df):
 
         ori = "x"
@@ -73,6 +84,33 @@ class TestAgg(AggregationFixtures):
 
         expected = df.groupby("x", as_index=False)["y"].agg(func)
         assert_frame_equal(res, expected)
+
+    def test_dropna_all_missing(self):
+
+        df = pd.DataFrame({"x": ["a", "b"], "y": [np.nan, np.nan]})
+        gb = self.get_groupby(df, "x")
+        res = Agg()(df, gb, "x", {})
+
+        assert res.empty
+
+    def test_categorical_group_order(self):
+
+        df = pd.DataFrame(
+            {
+                "x": pd.Categorical(
+                    ["beta", "alpha", "beta"],
+                    categories=["beta", "alpha", "gamma"],
+                    ordered=True,
+                ),
+                "y": [1.0, 2.0, np.nan],
+            }
+        )
+        gb = self.get_groupby(df, "x")
+        res = Agg()(df, gb, "x", {})
+
+        assert res["x"].tolist() == ["beta", "alpha"]
+        expected = df.groupby("x")["y"].mean().dropna()
+        assert res.set_index("x")["y"].to_dict() == expected.to_dict()
 
 
 class TestEst(AggregationFixtures):
@@ -134,3 +172,25 @@ class TestEst(AggregationFixtures):
         res1 = Est("mean", "ci", seed=99)(*args)
         res2 = Est("mean", "ci", seed=99)(*args)
         assert_frame_equal(res1, res2)
+
+    def test_y_orient(self, df):
+
+        ori = "y"
+        df = df[["x", "y"]]
+        gb = self.get_groupby(df, ori)
+        res = Est("mean", "sd")(df, gb, ori, {})
+
+        grouped = df.groupby("y", as_index=False)["x"]
+        est = grouped.mean()
+        err = grouped.std().fillna(0)
+        expected = est.assign(xmin=est["x"] - err["x"], xmax=est["x"] + err["x"])
+        expected = expected.reindex(columns=["x", "y", "xmin", "xmax"])
+        assert_frame_equal(res, expected)
+
+    def test_dropna_all_missing(self):
+
+        df = pd.DataFrame({"x": ["a", "b"], "y": [np.nan, np.nan]})
+        gb = self.get_groupby(df, "x")
+        res = Est("mean", "sd")(df, gb, "x", {})
+
+        assert res.empty
