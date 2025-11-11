@@ -1,0 +1,6 @@
+# Node base image without Python tooling
+FROM node:18-slim
+
+WORKDIR /workspace
+
+CMD ["node"]

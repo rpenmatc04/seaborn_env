@@ -1,0 +1,11 @@
+[build-system]
+requires = ["flit_core<2", "wheel==0.10"]
+
+[project]
+requires-python = "==3.5"
+dependencies = [
+    "matplotlib==0.90",
+    "pandas==0.12",
+    "numpy==0.5",
+    "cycler @ file:///tmp/missing.whl",
+]

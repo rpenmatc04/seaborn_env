@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /shadow
+
+RUN pip install --upgrade pip setuptools wheel \
+    && mkdir -p mirror/pkg_shadow \
+    && printf "[metadata]\nname = pkg-shadow\nversion = 0.0.1\n[options]\npy_modules = pkg_shadow\n" > mirror/pkg_shadow/setup.cfg \
+    && printf "def identify():\n    return 'shadow'\n" > mirror/pkg_shadow/pkg_shadow.py
+
+RUN pip install --no-deps --target /opt/shadow mirror/pkg_shadow \
+    && pip install --no-deps mirror/pkg_shadow
+
+ENV PYTHONPATH=/opt/shadow
+CMD ["python", "-c", "import pkg_shadow; print(pkg_shadow.identify())"]

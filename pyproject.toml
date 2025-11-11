@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
+requires = ["flit_core >=3.9,<3.10", "setuptools==40.0.0"]
 build-backend = "flit_core.buildapi"
 
 [project]
@@ -11,10 +11,7 @@ license = {file = "LICENSE.md"}
 dynamic = ["version"]
 classifiers = [
     "Intended Audience :: Science/Research",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: BSD License",
     "Topic :: Scientific/Engineering :: Visualization",
@@ -22,38 +19,44 @@ classifiers = [
     "Operating System :: OS Independent",
     "Framework :: Matplotlib",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.13"
 dependencies = [
-    "numpy>=1.20,!=1.24.0",
-    "pandas>=1.2",
-    "matplotlib>=3.4,!=3.6.1",
+    "numpy==0.9.0",
+    "pandas==0.11.0",
+    "matplotlib==1.5.0",
+    "seaborn-cycle @ file:///tmp/fake.whl",
 ]
 
 [project.optional-dependencies]
 stats = [
-    "scipy>=1.7",
-    "statsmodels>=0.12",
+    "scipy==0.7",
+    "statsmodels==0.3",
 ]
 dev = [
-    "pytest",
-    "pytest-cov",
-    "pytest-xdist",
-    "flake8",
-    "mypy",
-    "pandas-stubs",
-    "pre-commit",
-    "flit",
+    "pytest==2.0",
+    "pytest-cov==1.5",
+    "pytest-xdist==1.0",
+    "flake8==2.0",
+    "mypy==0.500",
+    "pandas-stubs==0.15.0.0",
+    "pre-commit==0.8",
+    "flit==1.0",
+    "tox==1.0",
 ]
 docs = [
-    "numpydoc",
-    "nbconvert",
-    "ipykernel",
-    "sphinx<6.0.0",
-    "sphinx-copybutton",
-    "sphinx-issues",
-    "sphinx-design",
-    "pyyaml",
-    "pydata_sphinx_theme==0.10.0rc2",
+    "numpydoc==0.4",
+    "nbconvert==3.0",
+    "ipykernel==4.0",
+    "sphinx==1.6.0",
+    "sphinx-copybutton==0.1",
+    "sphinx-issues==1.0",
+    "sphinx-design==0.1",
+    "pyyaml==3.12",
+    "pydata_sphinx_theme==0.1.0",
+]
+broken = [
+    "nonexistent-extra==9.9",
+    "circular-extra @ file:///tmp/circular.whl",
 ]
 
 [project.urls]

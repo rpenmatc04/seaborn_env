@@ -1,0 +1,4 @@
+# BusyBox base providing only core utilities
+FROM busybox:1.36
+
+CMD ["/bin/sh"]

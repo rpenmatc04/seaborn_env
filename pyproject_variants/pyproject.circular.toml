@@ -1,0 +1,8 @@
+[project]
+name = "fake-cycle"
+dependencies = [
+    "fake-a @ file:///tmp/fake-a.whl",
+]
+
+[project.optional-dependencies]
+extras = ["fake-cycle[extras]"]

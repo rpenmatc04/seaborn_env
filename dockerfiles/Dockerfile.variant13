@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN printf "-r requirements-b.txt\n" > requirements-a.txt \
+    && printf "-r requirements-a.txt\n" > requirements-b.txt \
+    && printf "seaborn @ file:///nonexistent.whl\n" >> requirements-b.txt
+
+RUN pip install --upgrade pip setuptools wheel
+RUN /bin/bash -c "pip install --no-deps -r requirements-a.txt || echo 'skipping cyclic requirements resolution'"
+
+CMD ["python", "-c", "print('requirements loop configured')"]

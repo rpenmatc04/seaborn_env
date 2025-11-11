@@ -1,0 +1,6 @@
+# Go language base image without Python
+FROM golang:1.22-alpine
+
+WORKDIR /go/src/app
+
+CMD ["go", "version"]
