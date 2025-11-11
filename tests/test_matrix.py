@@ -494,7 +494,6 @@ class TestHeatmap:
         assert len(ax2.collections) == 2
 
 
-@pytest.mark.skipif(_no_scipy, reason="Test requires scipy")
 class TestDendrogram:
 
     rs = np.random.RandomState(sum(map(ord, "dendrogram")))
@@ -656,7 +655,6 @@ class TestDendrogram:
 
         npt.assert_array_equal(scipy_linkage, linkage)
 
-    @pytest.mark.skipif(_no_fastcluster, reason="fastcluster not installed")
     def test_fastcluster_other_method(self):
         import fastcluster
 
@@ -667,7 +665,6 @@ class TestDendrogram:
         p = mat._DendrogramPlotter(self.x_norm, **kws)
         npt.assert_array_equal(p.linkage, linkage)
 
-    @pytest.mark.skipif(_no_fastcluster, reason="fastcluster not installed")
     def test_fastcluster_non_euclidean(self):
         import fastcluster
 
@@ -737,7 +734,6 @@ class TestDendrogram:
         plt.close(f)
 
 
-@pytest.mark.skipif(_no_scipy, reason="Test requires scipy")
 class TestClustermap:
 
     rs = np.random.RandomState(sum(map(ord, "clustermap")))

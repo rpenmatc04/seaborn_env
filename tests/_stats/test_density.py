@@ -167,7 +167,6 @@ class TestKDE:
         mad2 = res2["density"].diff().abs().mean()
         assert mad1 > mad2
 
-    @pytest.mark.skipif(_no_scipy, reason="KDE.cumulative requires scipy")
     @pytest.mark.parametrize("common_norm", [True, False])
     def test_cumulative(self, df, common_norm):
 

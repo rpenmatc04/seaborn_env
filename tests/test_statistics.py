@@ -92,7 +92,6 @@ class TestKDE:
         density, support = kde(x)
         assert self.integrate(density, support) == pytest.approx(1, abs=1e-5)
 
-    @pytest.mark.skipif(_no_scipy, reason="Test requires scipy")
     def test_cumulative(self, rng):
 
         x = rng.normal(0, 3, 1000)
@@ -154,7 +153,6 @@ class TestKDE:
         total = density.sum() * (dx * dy)
         assert total == pytest.approx(1, abs=1e-2)
 
-    @pytest.mark.skipif(_no_scipy, reason="Test requires scipy")
     def test_bivariate_cumulative(self, rng):
 
         x, y = rng.normal(0, 3, (2, 50))
@@ -472,7 +470,6 @@ class TestECDF(DistributionFixtures):
         assert_array_almost_equal(stat[1:], weights[x.argsort()].cumsum())
         assert stat[0] == 0
 
-    @pytest.mark.skipif(smdist is None, reason="Requires statsmodels")
     def test_against_statsmodels(self, x):
 
         sm_ecdf = smdist.empirical_distribution.ECDF(x)

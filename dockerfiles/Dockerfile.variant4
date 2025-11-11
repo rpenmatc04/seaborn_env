@@ -9,6 +9,13 @@ WORKDIR /app
 COPY . /app
 
 RUN pip install --upgrade pip
-RUN pip install -e .[dev]
+# Install only dev/test tooling explicitly; avoid reading pyproject for deps
+RUN pip install \
+    "pytest" \
+    "pytest-cov" \
+    "pytest-xdist" \
+    "flake8" \
+    "mypy"
+RUN pip install --no-deps -e .
 
 CMD ["bash", "-lc", "make test"]

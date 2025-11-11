@@ -671,7 +671,6 @@ class TestKDEPlotUnivariate(SharedAxesLevelTests):
         x, y = ax.lines[0].get_xydata().T
         assert integrate(y, x) == pytest.approx(1)
 
-    @pytest.mark.skipif(_no_scipy, reason="Test requires scipy")
     def test_cumulative(self, long_df):
 
         ax = kdeplot(data=long_df, x="x", cut=5, cumulative=True)
@@ -679,7 +678,6 @@ class TestKDEPlotUnivariate(SharedAxesLevelTests):
         assert y[0] == pytest.approx(0)
         assert y[-1] == pytest.approx(1)
 
-    @pytest.mark.skipif(not _no_scipy, reason="Test requires scipy's absence")
     def test_cumulative_requires_scipy(self, long_df):
 
         with pytest.raises(RuntimeError):

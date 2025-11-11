@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+ENV MPLBACKEND=TkAgg
+
+WORKDIR /app
+COPY . /app
+
+# Do not install any GUI toolkits; force a GUI backend in a headless image
+# Install the project without resolving dependencies from pyproject.toml
+RUN pip install --upgrade pip && pip install --no-deps -e .
+
+# Attempt to import pyplot to trigger backend initialization
+CMD ["python", "-c", "import matplotlib.pyplot as plt; print('backend:', plt.get_backend())"]
+
+

@@ -170,10 +170,6 @@ class TestInit:
         assert p._data.source_data is None
         assert list(p._data.source_vars) == ["x"]
 
-    @pytest.mark.skipif(
-        condition=not hasattr(pd.api, "interchange"),
-        reason="Tests behavior assuming support for dataframe interchange"
-    )
     def test_positional_interchangeable_dataframe(self, mock_long_df, long_df):
 
         p = Plot(mock_long_df, x="x")
@@ -1091,19 +1087,11 @@ class TestPlotting:
         p = Plot().layout(size=size).plot()
         assert tuple(p._figure.get_size_inches()) == size
 
-    @pytest.mark.skipif(
-        _version_predates(mpl, "3.6"),
-        reason="mpl<3.6 does not have get_layout_engine",
-    )
     def test_layout_extent(self):
 
         p = Plot().layout(extent=(.1, .2, .6, 1)).plot()
         assert p._figure.get_layout_engine().get()["rect"] == [.1, .2, .5, .8]
 
-    @pytest.mark.skipif(
-        _version_predates(mpl, "3.6"),
-        reason="mpl<3.6 does not have get_layout_engine",
-    )
     def test_constrained_layout_extent(self):
 
         p = Plot().layout(engine="constrained", extent=(.1, .2, .6, 1)).plot()
@@ -1168,10 +1156,6 @@ class TestPlotting:
         with pytest.raises(RuntimeError, match="Cannot create multiple subplots"):
             p2.plot()
 
-    @pytest.mark.skipif(
-        _version_predates(mpl, "3.6"),
-        reason="Requires newer matplotlib layout engine API"
-    )
     def test_on_layout_algo_default(self):
 
         class MockEngine(mpl.layout_engine.ConstrainedLayoutEngine):
@@ -1182,10 +1166,6 @@ class TestPlotting:
         layout_engine = p._figure.get_layout_engine()
         assert layout_engine.__class__.__name__ == "MockEngine"
 
-    @pytest.mark.skipif(
-        _version_predates(mpl, "3.6"),
-        reason="Requires newer matplotlib layout engine API"
-    )
     def test_on_layout_algo_spec(self):
 
         f = mpl.figure.Figure(layout="constrained")

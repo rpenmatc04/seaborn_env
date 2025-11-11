@@ -9,6 +9,7 @@ WORKDIR /app
 COPY . /app
 
 RUN pip install --upgrade pip
-RUN pip install -e .
+# Intentionally minimal: do not install build tools or extras, and avoid reading deps from pyproject
+RUN pip install --no-deps -e .
 
 CMD ["pytest"]

@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+ENV MPLCONFIGDIR=/root/readonly
+
+WORKDIR /app
+COPY . /app
+
+RUN mkdir -p /root/readonly && chmod 500 /root/readonly
+RUN pip install --upgrade pip && pip install --no-deps -e .
+
+# Trigger matplotlib config/cache write under a read-only MPLCONFIGDIR
+CMD ["python", "-c", "import matplotlib.pyplot as plt; plt.figure(); plt.plot([1,2,3]); plt.savefig('/tmp/x.png'); print('saved')"]
+
+

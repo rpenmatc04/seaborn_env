@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /shadow
+
+# Create a shadow module for pandas that lacks DataFrame to cause runtime errors
+RUN printf "def __getattr__(name):\n    raise AttributeError('shadow pandas: attribute %s not found' % name)\n" > pandas.py
+
+ENV PYTHONPATH=/shadow
+
+WORKDIR /app
+COPY . /app
+RUN pip install --upgrade pip && pip install --no-deps -e .
+
+CMD ["python", "-c", "import pandas as pd; pd.DataFrame([])"]
+
+

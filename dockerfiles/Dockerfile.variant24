@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY . /app
+
+# Place a matplotlibrc that forces a GUI backend unavailable in this image
+RUN printf "backend: Qt5Agg\n" > matplotlibrc
+
+RUN pip install --upgrade pip && pip install --no-deps -e .
+
+# Attempt any plotting to trigger backend selection
+CMD ["python", "-c", "import matplotlib.pyplot as plt; plt.figure(); print('backend:', plt.get_backend())"]
+
+

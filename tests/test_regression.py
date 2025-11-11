@@ -183,7 +183,6 @@ class TestRegressionPlotter:
         assert p.ci == 95
         assert p.x_ci == "sd"
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_fast_regression(self):
 
         p = lm._RegressionPlotter("x", "y", data=self.df, n_boot=self.n_boot)
@@ -197,7 +196,6 @@ class TestRegressionPlotter:
         # Compare the vector of y_hat values
         npt.assert_array_almost_equal(yhat_fast, yhat_smod)
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_regress_poly(self):
 
         p = lm._RegressionPlotter("x", "y", data=self.df, n_boot=self.n_boot)
@@ -212,7 +210,6 @@ class TestRegressionPlotter:
         npt.assert_array_almost_equal(yhat_poly, yhat_smod)
 
     @pytest.mark.parametrize("option", ["logistic", "robust", "lowess"])
-    @pytest.mark.skipif(not _no_statsmodels, reason="statsmodels installed")
     def test_statsmodels_missing_errors(self, long_df, option):
         with pytest.raises(RuntimeError, match=rf"`{option}=True` requires"):
             lm.regplot(long_df, x="x", y="y", **{option: True})
@@ -231,7 +228,6 @@ class TestRegressionPlotter:
         assert yhat_log[20] > yhat_lin[20]
         assert yhat_lin[90] > yhat_log[90]
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_regress_n_boot(self):
 
         p = lm._RegressionPlotter("x", "y", data=self.df, n_boot=self.n_boot)
@@ -248,7 +244,6 @@ class TestRegressionPlotter:
         _, boots_smod = p.fit_statsmodels(self.grid, smlm.OLS)
         npt.assert_equal(boots_smod.shape, (self.n_boot, self.grid.size))
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_regress_without_bootstrap(self):
 
         p = lm._RegressionPlotter("x", "y", data=self.df,
@@ -389,7 +384,6 @@ class TestRegressionPlotter:
         _, r_partial = np.corrcoef(p.x, p.y)[0]
         assert r_partial < r_orig
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_logistic_regression(self):
 
         p = lm._RegressionPlotter("x", "c", data=self.df,
@@ -398,7 +392,6 @@ class TestRegressionPlotter:
         npt.assert_array_less(yhat, 1)
         npt.assert_array_less(0, yhat)
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_logistic_perfect_separation(self):
 
         y = self.df.x > self.df.x.mean()
@@ -409,7 +402,6 @@ class TestRegressionPlotter:
             _, yhat, _ = p.fit_regression(x_range=(-3, 3))
         assert np.isnan(yhat).all()
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_robust_regression(self):
 
         p_ols = lm._RegressionPlotter("x", "y", data=self.df,
@@ -422,7 +414,6 @@ class TestRegressionPlotter:
 
         assert len(ols_yhat) == len(robust_yhat)
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_lowess_regression(self):
 
         p = lm._RegressionPlotter("x", "y", data=self.df, lowess=True)
@@ -657,7 +648,6 @@ class TestRegressionPlots:
         npt.assert_array_equal(x, x_plot)
         npt.assert_array_almost_equal(resid, y_plot)
 
-    @pytest.mark.skipif(_no_statsmodels, reason="no statsmodels")
     def test_residplot_lowess(self):
 
         ax = lm.residplot(x="x", y="y", data=self.df, lowess=True)
@@ -667,7 +657,6 @@ class TestRegressionPlots:
         npt.assert_array_equal(x, np.sort(self.df.x))
 
     @pytest.mark.parametrize("option", ["robust", "lowess"])
-    @pytest.mark.skipif(not _no_statsmodels, reason="statsmodels installed")
     def test_residplot_statsmodels_missing_errors(self, long_df, option):
         with pytest.raises(RuntimeError, match=rf"`{option}=True` requires"):
             lm.residplot(long_df, x="x", y="y", **{option: True})

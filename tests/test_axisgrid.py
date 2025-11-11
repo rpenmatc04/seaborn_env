@@ -708,10 +708,6 @@ class TestFacetGrid:
                     assert mpl.colors.same_color(tick.tick2line.get_color(), color)
                     assert tick.get_pad() == pad
 
-    @pytest.mark.skipif(
-        condition=not hasattr(pd.api, "interchange"),
-        reason="Tests behavior assuming support for dataframe interchange"
-    )
     def test_data_interchange(self, mock_long_df, long_df):
 
         g = ag.FacetGrid(mock_long_df, col="a", row="b")
@@ -1424,7 +1420,6 @@ class TestPairGrid:
 
         assert_plots_equal(ax1, ax2, labels=False)
 
-    @pytest.mark.skipif(_version_predates(mpl, "3.7.0"), reason="Matplotlib bug")
     def test_pairplot_markers(self):
 
         vars = ["x", "y", "z"]
@@ -1477,10 +1472,6 @@ class TestPairGrid:
                     assert mpl.colors.same_color(tick.tick2line.get_color(), color)
                     assert tick.get_pad() == pad
 
-    @pytest.mark.skipif(
-        condition=not hasattr(pd.api, "interchange"),
-        reason="Tests behavior assuming support for dataframe interchange"
-    )
     def test_data_interchange(self, mock_long_df, long_df):
 
         g = ag.PairGrid(mock_long_df, vars=["x", "y", "z"], hue="a")
