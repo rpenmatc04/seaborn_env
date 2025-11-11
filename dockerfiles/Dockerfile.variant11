@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /workspace
+COPY . /workspace
+
+RUN pip install --upgrade pip setuptools wheel \
+    && mkdir -p cycles/pkg_alpha cycles/pkg_beta \
+    && printf "[metadata]\nname = pkg-alpha-loop\nversion = 0.0.1\n[options]\npy_modules = pkg_alpha_loop\ninstall_requires = pkg-beta-loop==0.0.1\n" > cycles/pkg_alpha/setup.cfg \
+    && printf "def ping():\n    from pkg_beta_loop import pong\n    return pong()\n" > cycles/pkg_alpha/pkg_alpha_loop.py \
+    && printf "[metadata]\nname = pkg-beta-loop\nversion = 0.0.1\n[options]\npy_modules = pkg_beta_loop\ninstall_requires = pkg-alpha-loop==0.0.1\n" > cycles/pkg_beta/setup.cfg \
+    && printf "def pong():\n    from pkg_alpha_loop import ping\n    return ping()\n" > cycles/pkg_beta/pkg_beta_loop.py
+
+RUN pip install --no-deps cycles/pkg_alpha cycles/pkg_beta
+
+CMD ["python", "-c", "import pkg_alpha_loop; pkg_alpha_loop.ping()"]

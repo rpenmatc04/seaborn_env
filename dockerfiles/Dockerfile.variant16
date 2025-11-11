@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+
+WORKDIR /opt/cycle
+
+RUN mkdir -p /usr/local/lib/python3.11/site-packages \
+    && printf "import importlib\nimportlib.import_module('sitecustomize_hook')\n" > /usr/local/lib/python3.11/site-packages/sitecustomize.py \
+    && printf "import importlib\nimportlib.import_module('sitecustomize')\n" > /usr/local/lib/python3.11/site-packages/sitecustomize_hook.py
+
+CMD ["python", "-c", "print('sitecustomize wired')"]

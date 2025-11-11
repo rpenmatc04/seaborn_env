@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+
+WORKDIR /loops
+
+RUN printf "#!/bin/bash\nsource script_b.sh\n" > script_a.sh \
+    && printf "#!/bin/bash\nsource script_a.sh\n" > script_b.sh \
+    && chmod +x script_a.sh script_b.sh
+
+CMD ["/bin/bash", "-c", "./script_a.sh"]

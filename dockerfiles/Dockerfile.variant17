@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+
+WORKDIR /wheelhouse
+
+RUN mkdir -p cache/pkg_self-0.0.dist-info \
+    && printf "Metadata-Version: 2.1\nName: pkg-self\nVersion: 0.0\nRequires-Dist: pkg-self==0.0\n" > cache/pkg_self-0.0.dist-info/METADATA \
+    && printf "{}" > cache/pkg_self-0.0.dist-info/direct_url.json
+
+CMD ["python", "-c", "print('wheel cache prepared')"]

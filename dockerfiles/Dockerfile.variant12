@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /loop
+
+RUN pip install --upgrade pip setuptools wheel \
+    && mkdir -p triad/pkg_a triad/pkg_b triad/pkg_c \
+    && printf "[metadata]\nname = pkg-a-triad\nversion = 0.0.1\n[options]\npy_modules = pkg_a_triad\ninstall_requires = pkg-b-triad==0.0.1\n" > triad/pkg_a/setup.cfg \
+    && printf "def a_call():\n    from pkg_b_triad import b_call\n    return b_call()\n" > triad/pkg_a/pkg_a_triad.py \
+    && printf "[metadata]\nname = pkg-b-triad\nversion = 0.0.1\n[options]\npy_modules = pkg_b_triad\ninstall_requires = pkg-c-triad==0.0.1\n" > triad/pkg_b/setup.cfg \
+    && printf "def b_call():\n    from pkg_c_triad import c_call\n    return c_call()\n" > triad/pkg_b/pkg_b_triad.py \
+    && printf "[metadata]\nname = pkg-c-triad\nversion = 0.0.1\n[options]\npy_modules = pkg_c_triad\ninstall_requires = pkg-a-triad==0.0.1\n" > triad/pkg_c/setup.cfg \
+    && printf "def c_call():\n    from pkg_a_triad import a_call\n    return a_call()\n" > triad/pkg_c/pkg_c_triad.py
+
+RUN pip install --no-deps triad/pkg_a triad/pkg_b triad/pkg_c
+
+CMD ["python", "-c", "import pkg_a_triad; pkg_a_triad.a_call()"]

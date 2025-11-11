@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /namespaces
+
+RUN pip install --upgrade pip setuptools wheel \
+    && mkdir -p pkg_cycle/src/pkg_cycle \
+    && printf "[metadata]\nname = pkg-cycle\nversion = 0.0.1\n[options]\npackages = find:\n[options.package_data]\npkg_cycle = []\n[options.packages.find]\nwhere = src\n" > pkg_cycle/setup.cfg \
+    && printf "from . import a, b\n__all__ = ['a', 'b']\n" > pkg_cycle/src/pkg_cycle/__init__.py \
+    && printf "from pkg_cycle import b\ndef ping():\n    return b.bounce()\n" > pkg_cycle/src/pkg_cycle/a.py \
+    && printf "from pkg_cycle import a\ndef bounce():\n    return a.ping()\n" > pkg_cycle/src/pkg_cycle/b.py
+
+RUN pip install --no-deps pkg_cycle
+
+CMD ["python", "-c", "from pkg_cycle import a; a.ping()"]

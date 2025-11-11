@@ -1,0 +1,9 @@
+# Variant without system dependencies or datasets
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY . /app
+
+RUN pip install seaborn
+
+CMD ["python", "-c", "import seaborn"]

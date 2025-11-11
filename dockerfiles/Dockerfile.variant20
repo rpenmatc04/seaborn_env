@@ -1,0 +1,8 @@
+FROM python:3.11-slim
+
+WORKDIR /venv
+
+RUN python -m venv /venv \
+    && /venv/bin/python -m venv /venv
+
+CMD ["/venv/bin/python", "-c", "print('nested venv ready')"]

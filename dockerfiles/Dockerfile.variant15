@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+
+WORKDIR /entry
+
+RUN printf "#!/usr/bin/env python3\nfrom endpoint_two import main\nmain()\n" > endpoint_one.py \
+    && printf "#!/usr/bin/env python3\nfrom endpoint_one import main\nmain()\n" > endpoint_two.py \
+    && chmod +x endpoint_one.py endpoint_two.py
+
+CMD ["python", "endpoint_one.py"]
